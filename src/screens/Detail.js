@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image, Dimensions, ImageBackground } from 'react-native'
+import React, { useContext, useEffect } from 'react'
+import { StyleSheet, Image, Dimensions, ImageBackground } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
 import RootContext from '../context/RootContext';
+import { Block, Text } from "../components";
+
 
 const { width, height } = Dimensions.get("window");
-
-const randomBetween = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
 
 const Detail = ({ navigation }) => {
     const { characterDetail, getCharacter } = useContext(RootContext);
@@ -14,9 +13,15 @@ const Detail = ({ navigation }) => {
         getCharacter();
     }, []);
     return (
-        <View>
-            <ImageBackground source={require('../assets/background/bg1.png')} style={styles.image}>
-                <Text style={styles.text}>{characterDetail.name}</Text>
+        <>
+            <ImageBackground source={require('../assets/background/bg1.png')} style={styles.image} imageStyle=
+                {{ opacity: 0.4 }}>
+
+                <Block flex={false} center style={styles.location}>
+                    <Ionicons name="location-outline" size={32} color="white" />
+                    <Text size={15} color="white" bold>{characterDetail.origin && characterDetail.origin.name}</Text>
+                </Block>
+                <Text white bold size={24} color="white" style={styles.text}>{characterDetail.name}</Text>
                 <Image
                     source={{ uri: characterDetail.image }}
                     style={styles.profilImage}
@@ -24,11 +29,16 @@ const Detail = ({ navigation }) => {
                 />
             </ImageBackground>
 
-            <View style={styles.personal}>
-                <Text>{characterDetail.name}</Text>
-                <Text>{characterDetail.origin && characterDetail.origin.name}</Text>
-            </View>
-        </View>
+            <Block flex={false} center style={styles.liftUp} margin={[-50, 0, 0, 0]} color="white">
+                <Text size={24} >Bulunduğu Bölümler</Text>
+                {
+                    characterDetail && characterDetail.episode.slice(-5).map(episode =>
+                        <Text>{episode.replace('https://rickandmortyapi.com/api/episode/', "")}</Text>
+                    )
+
+                }
+            </Block>
+        </>
     )
 }
 
@@ -39,30 +49,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f8f8'
     },
     image: {
-        width: undefined,
+        width: width,
         height: 400,
         aspectRatio: 1.7,
-        resizeMode: 'cover'
+        backgroundColor: "#000000a0",
     },
-    personal: {
-        backgroundColor: '#fff',
+    liftUp: {
         borderTopRightRadius: 30,
         borderTopLeftRadius: 30,
         height: height,
-        marginTop: - 50,
-        alignItems: 'center'
-
     },
     text: {
-        color: "white",
-        fontSize: 24,
-        fontWeight: "bold",
-        textAlign: "left",
-        backgroundColor: "#000000a0",
         position: 'absolute',
         left: 15,
         bottom: 60
-
     },
     profilImage: {
         width: 100,
@@ -70,8 +70,12 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         resizeMode: 'contain',
         position: 'absolute',
-        backgroundColor: "#000000a0",
         right: 300,
         bottom: 60
+    },
+    location: {
+        position: 'absolute',
+        right: 300,
+        top: 30,
     }
 })

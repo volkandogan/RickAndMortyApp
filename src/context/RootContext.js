@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 
@@ -17,16 +17,11 @@ export const RootProvider = ({ children }) => {
     const getCharacters = (page) => {
         axios.get(`${API}character/?page=${page}`)
             .then((response) => {
-                //console.log(response)
                 let newData = characters;
                 let data = (response.data && response.data.results) || [];
-
-
-                //setCharacters(...characters, response.data.results)
                 data.map((data) => {
                     newData.push(data);
                 });
-
                 setCharacters(newData);
             })
             .catch((error) => {
@@ -34,10 +29,8 @@ export const RootProvider = ({ children }) => {
             });
     }
     const getCharacter = () => {
-        console.log(characterId)
         axios.get(`${API}character/${characterId}`)
             .then((response) => {
-                //console.log(response.data)
                 setCharacterDetail(response.data)
             })
             .catch((error) => {
@@ -46,23 +39,6 @@ export const RootProvider = ({ children }) => {
     }
     const chooseCharachter = (id) => {
         setCharacterId(id)
-    }
-
-    const getEpisodeName = (episode) => {
-        /* {
-             characterDetail && characterDetail.episode.slice(-5).map(episode =>
-                 <Text>{episode.replace('https://rickandmortyapi.com/api/episode/', "")}</Text>
-             )
- 
-         }*/
-        axios.get(`${API}episode/${episode}`)
-            .then((response) => {
-                //console.log(response.data)
-                setCharacterDetail(response.data)
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
     }
     return (
         <RootContext.Provider
